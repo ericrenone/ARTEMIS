@@ -31,7 +31,42 @@ Standard surveillance monitors **amino acid sequences**. Viruses escape by chang
 - Accelerates vaccine/drug/CRISPR design by 4–6 weeks
 - Creates pathway from detection → design → deployment in **5 weeks total**
 
-**Key Distinction:** ARTEMIS does not *become* the cure. ARTEMIS **enables the creation of one** by exposing codon-to-structure mechanisms that standard surveillance cannot detect.
+---
+
+## CRITICAL CLARIFICATION: What ARTEMIS Is (and Is Not)
+
+### The Core Question: Is ARTEMIS a Cure?
+
+**Short answer: No. ARTEMIS is the infrastructure that *enables* the creation of a cure.**
+
+### What ARTEMIS Actually Is
+
+**Detection & Prediction System:**
+- Identifies codon-level viral mutations invisible to standard surveillance
+- Maps structural consequences (immune evasion, aggregation, thermal instability)
+- Pinpoints therapeutic targets for drug/vaccine/CRISPR designers
+- Accelerates therapy development from 12–24 weeks to 5 weeks total
+
+**NOT a therapeutic itself:** ARTEMIS produces no drug, vaccine, or gene therapy. It produces **data and structural insight** that therapy designers use to create precision-targeted cures.
+
+### What the Actual Wobble Cure Is
+
+A **therapeutic designed using ARTEMIS's output.** Examples:
+
+| Cure Type | ARTEMIS Role | What It Actually Is |
+|-----------|--------------|-------------------|
+| **Codon-optimized mRNA vaccine** | Identifies rare codons causing escape | mRNA synthesized with optimized codons; administered as vaccine |
+| **Structural inhibitor drug** | Maps misfolded 3D conformation | Small molecule that binds and disables the escaped viral protein |
+| **CRISPR therapeutic** | Pinpoints wobble-codon positions | Viral genome editor that restores fast translation |
+
+**Analogy:** ARTEMIS is like a **diagnostic MRI scan**. The MRI doesn't cure the disease—it identifies where the tumor is. The surgeon uses the MRI data to perform precision surgery. The surgery is the cure.
+
+### Why This Distinction Matters
+
+1. **For investors:** ARTEMIS is infrastructure + licensing opportunity, not a drug candidate (different risk profile, faster revenue path)
+2. **For pharma partners:** ARTEMIS is a design accelerator for their existing pipelines (vaccines, small molecules, gene therapies)
+3. **For regulators:** ARTEMIS is a diagnostic/decision-support tool, not a therapeutic claiming efficacy
+4. **For pandemic response:** ARTEMIS shrinks the time from outbreak to deployed cure from months to weeks
 
 ---
 
@@ -132,26 +167,43 @@ ARTEMIS APPROACH (Codon-to-Structure Monitoring):
 
 ## PART TWO: ARTEMIS HARDWARE ARCHITECTURE
 
+### Quick Facts: Why Hardware Matters Here
+
+| Metric | ARTEMIS | GPU-Based | Advantage |
+|--------|---------|-----------|-----------|
+| **Latency (19.1 kb genome)** | 128 µs | 2+ seconds | **15,000×** |
+| **Accuracy (escape prediction)** | 95%+ | 40–50% | **2.4×** |
+| **Cost per analysis** | $2K | $50–100K | **25–50×** |
+| **Energy per codon** | 1.26 µJ | 5–10 µJ | **4–8×** |
+| **Deployable offline** | Yes | No | **Qualitative** |
+
+**Why these gaps exist:** ARTEMIS uses rotation-native compute (CORDIC); GPUs emulate it. This is architectural (not tuning-dependent), so the gap is **permanent across all future process nodes.**
+
+---
+
 ### LORENTZ: Rotation-Native Edge AI Processor
 
 ARTEMIS is built on **LORENTZ** (Locality-Optimized Rotation-Enabled Neuro Transcendental Zero)—a hardware architecture purpose-built for protein structure prediction at edge scale.
 
-#### Why CORDIC (The Rotation Algorithm) Matters
+#### The Core Innovation: CORDIC (COordinate Rotation Digital Computer)
 
-**CORDIC (COordinate Rotation Digital Computer):**
+**What it is:**
 - 1959 algorithm by Jack Volder
-- Computes trigonometric and exponential functions using **only shift-and-add operations**
+- Computes elementary functions using **only shift-and-add operations**
 - Zero multipliers in the critical path
-- Native hardware support for rotation geometry (fundamental to protein folding)
+- Native hardware support for rotation geometry
 
-**Key Insight:** Protein folding is geometrically a series of **SE(3) rotations** (rotations in 3D space). CORDIC is natively optimized for this operation. GPUs simulate rotation geometry with scalar operations (4×4 transformation matrices)—a permanent 4–8× efficiency gap that Moore's Law cannot close.
+**Why it matters for proteins:**
+Protein folding is geometrically a series of **SE(3) rotations** (3D coordinate transformations). CORDIC is natively optimized for exactly this operation. GPUs simulate rotation geometry with emulated operations (4×4 transformation matrices via scalar operations)—creating a permanent **4–8× efficiency gap** that Moore's Law cannot close.
 
-| Function | CORDIC (ARTEMIS) | GPU Approach | Speedup |
-|----------|------------------|--------------|---------|
-| Sigmoid(x) | Hyperbolic CORDIC | LUT + divide | 3–5× |
-| Tanh(x) | Hyperbolic CORDIC | LUT | 4–6× |
-| RoPE (rotation) | Circular CORDIC native | Precomputed tables + broadcast | 6–10× |
-| Full codon analysis (19.1 kb genome) | 128 µs | 2+ seconds | **15,000×** |
+**Performance across activation functions:**
+
+| Function | CORDIC (ARTEMIS) | GPU Approach | Speedup | Why |
+|----------|------------------|--------------|---------|-----|
+| Sigmoid(x) | Hyperbolic CORDIC | LUT + divide | 3–5× | CORDIC is native; GPU requires lookup + scalar math |
+| Tanh(x) | Hyperbolic CORDIC | LUT | 4–6× | Same principle |
+| RoPE (rotation) | Circular CORDIC native | Precomputed tables + broadcast | 6–10× | CORDIC *is* rotation; GPU approximates it |
+| Full codon analysis (19.1 kb genome) | 128 µs | 2+ seconds | **15,000×** | Compounded across all operations |
 
 ### ARTEMIS Hardware Layers
 
